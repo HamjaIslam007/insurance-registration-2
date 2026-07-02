@@ -1,0 +1,418 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--color-background-tertiary);min-height:100vh}
+.page{max-width:680px;margin:0 auto;padding:1.5rem 1rem 3rem}
+.form-header{background:linear-gradient(135deg,#0078d4 0%,#005a9e 100%);border-radius:var(--border-radius-lg) var(--border-radius-lg) 0 0;padding:1.5rem 1.5rem 1.25rem;color:#fff;margin-bottom:0}
+.form-header h1{font-size:18px;font-weight:500;margin-bottom:4px}
+.form-header p{font-size:13px;opacity:0.85}
+.progress-bar{background:#fff;height:6px;border-radius:0;overflow:hidden}
+.progress-fill{height:100%;background:#0078d4;transition:width 0.4s;border-radius:0}
+.form-body{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-top:none;border-radius:0 0 var(--border-radius-lg) var(--border-radius-lg);padding:1.5rem}
+.section-title{font-size:13px;font-weight:500;color:#0078d4;text-transform:uppercase;letter-spacing:0.05em;padding:10px 0 8px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1rem;margin-top:1.5rem}
+.section-title:first-child{margin-top:0}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.field label .req{color:#c00;margin-left:2px}
+.field-hint{font-size:11px;color:var(--color-text-secondary);margin-bottom:5px;background:var(--color-background-secondary);padding:4px 8px;border-radius:var(--border-radius-md);border-left:2px solid #0078d4}
+.field input,.field select,.field textarea{width:100%;padding:8px 10px;font-size:13px;font-family:var(--font-sans);color:var(--color-text-primary);background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);outline:none;transition:border-color 0.15s}
+.field input:focus,.field select:focus{border-color:#0078d4;box-shadow:0 0 0 2px rgba(0,120,212,0.12)}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.radio-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.radio-btn{padding:6px 14px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:20px;cursor:pointer;color:var(--color-text-primary);background:var(--color-background-primary);transition:all 0.15s;user-select:none}
+.radio-btn:hover{border-color:#0078d4;color:#0078d4}
+.radio-btn.active{border-color:#0078d4;background:#e6f1fb;color:#0078d4;font-weight:500}
+.upload-box{border:1px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:14px;text-align:center;cursor:pointer;color:var(--color-text-secondary);font-size:13px;transition:border-color 0.15s}
+.upload-box:hover{border-color:#0078d4;color:#0078d4}
+.upload-box i{font-size:22px;display:block;margin-bottom:4px}
+.conditional{display:none;padding:1rem;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-top:8px}
+.conditional.show{display:block}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.coverage-table-wrap{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-top:1rem;overflow-x:auto}
+.coverage-table-wrap h3{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px}
+table.cov{width:100%;border-collapse:collapse;font-size:12px;min-width:480px}
+table.cov th{background:#0078d4;color:#fff;padding:8px 10px;text-align:left;font-weight:500;font-size:11px}
+table.cov th:not(:first-child){text-align:right}
+table.cov td{padding:8px 10px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);font-size:12px}
+table.cov td:not(:first-child){text-align:right;font-weight:500}
+table.cov tr.highlight td{background:#dbeeff;color:#004a8f}
+table.cov tr.highlight td:first-child{font-weight:500}
+table.cov tr:last-child td{border-bottom:none}
+table.cov td.not-covered{color:#c00;font-weight:500;text-align:right}
+.upgrade-panel{margin-top:1rem;background:var(--color-background-primary);border:0.5px solid var(--color-border-info);border-radius:var(--border-radius-lg);padding:1.25rem}
+.upgrade-panel h3{font-size:13px;font-weight:500;color:#0078d4;margin-bottom:4px}
+.upgrade-panel p{font-size:12px;color:var(--color-text-secondary);margin-bottom:10px}
+.upgrade-opts{display:flex;flex-direction:column;gap:6px}
+.upgrade-opt{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;transition:all 0.15s;gap:8px}
+.upgrade-opt:hover{border-color:#0078d4;background:#f0f7ff}
+.upgrade-opt.picked{border-color:#0078d4;background:#e6f1fb}
+.upgrade-opt.current-pkg{border-color:#0a6;background:#eaf3de}
+.pkg-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.pkg-meta{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.pkg-badge{font-size:11px;padding:3px 9px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.badge-default{background:#eaf3de;color:#0a6;font-weight:500}
+.badge-upgrade{background:#e6f1fb;color:#0078d4;font-weight:500}
+.badge-selected{background:#0078d4;color:#fff;font-weight:500}
+.submit-btn{width:100%;padding:11px;font-size:14px;font-weight:500;font-family:var(--font-sans);background:#0078d4;color:#fff;border:none;border-radius:var(--border-radius-md);cursor:pointer;margin-top:1.5rem;transition:background 0.15s}
+.submit-btn:hover{background:#005a9e}
+.prog-label{font-size:11px;color:var(--color-text-secondary);text-align:right;padding:3px 0 8px}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:8px;margin-left:6px;vertical-align:middle;background:#eaf3de;color:#0a6}
+.footnote{font-size:11px;color:var(--color-text-secondary);margin-top:8px}
+</style>
+
+<div class="page">
+  <h2 class="sr-only">ADN Group Employee Insurance Enrollment Form — interactive preview</h2>
+
+  <div class="form-header">
+    <h1>🛡️ Employee Insurance Enrollment Form</h1>
+    <p>ADN Group of Companies &nbsp;·&nbsp; HR Department &nbsp;·&nbsp; Confidential</p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:5%"></div></div>
+  <div class="form-body">
+    <div class="prog-label" id="prog-label">Step 1 of 6 — Company Info</div>
+
+    <div class="section-title">Section 1 — Company & Employee Info</div>
+
+    <div class="field">
+      <label>Q1. Company Name <span class="req">*</span></label>
+      <select id="company" onchange="updateProg()">
+        <option value="">— Select your company —</option>
+        <option>ADN DigiNet Limited</option>
+        <option>ADN EduServices Ltd.</option>
+        <option>ADN International Gateway</option>
+        <option>ADN Semiconductors</option>
+        <option>ADN Telecom Limited</option>
+        <option>ADN Telecom Limited (UDOY)</option>
+        <option>Cel Telecom Ltd.</option>
+        <option>Greenworld Solutions Limited</option>
+        <option>InGen Power Solutions</option>
+        <option>InGen Technology Ltd</option>
+        <option>SOS Developments</option>
+        <option>Tech Valley Networks Ltd</option>
+        <option>The Wave 24</option>
+      </select>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Q2. Employee ID <span class="req">*</span></label>
+        <div class="field-hint">ℹ️ Please provide your seven (7) digit unique employee identification number</div>
+        <input type="text" maxlength="7" placeholder="e.g. 1234567" oninput="this.value=this.value.replace(/\D/g,'');updateProg()">
+      </div>
+      <div class="field">
+        <label>Q3. Full Name <span class="req">*</span></label>
+        <div class="field-hint">ℹ️ Spelling must be as per NID</div>
+        <input type="text" placeholder="As written on NID" onchange="updateProg()">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Q4. Email Address <span class="req">*</span></label>
+      <div class="field-hint">ℹ️ Email must be Microsoft Outlook email (e.g. @adnsl.net or @adntelecom.net)</div>
+      <input type="email" placeholder="yourname@adnsl.net" onchange="updateProg()">
+    </div>
+
+    <div class="field">
+      <label>Q5. Designation <span class="req">*</span></label>
+      <select id="desig" onchange="onDesigChange()">
+        <option value="">— Select your designation —</option>
+        <option value="MD">Managing Director / Board Advisors</option>
+        <option value="DIR">Director</option>
+        <option value="DDIR">Deputy Director</option>
+        <option value="DGM">Deputy General Manager</option>
+        <option value="AGM">Assistant General Manager</option>
+        <option value="SM">Senior Manager</option>
+        <option value="MGR">Manager</option>
+        <option value="DM">Deputy Manager</option>
+        <option value="AM">Assistant Manager</option>
+        <option value="SRO">Sr. Officer / Sr. Engineer</option>
+        <option value="OFF">Officer / Engineer</option>
+        <option value="JRO">Jr. Officer / Asst. Engineer</option>
+        <option value="TRN">Trainee</option>
+      </select>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Q6. Department <span class="req">*</span></label>
+        <input type="text" placeholder="e.g. HR, Finance, IT…" onchange="updateProg()">
+      </div>
+      <div class="field">
+        <label>Q7. Date of Birth <span class="req">*</span></label>
+        <div class="field-hint">ℹ️ Date of birth must be as per NID</div>
+        <input type="date" onchange="updateProg()">
+      </div>
+    </div>
+
+    <div class="section-title">Section 2 — NID Information</div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Q8. NID Number <span class="req">*</span></label>
+        <input type="text" placeholder="National ID number" onchange="updateProg()">
+      </div>
+      <div class="field">
+        <label>Q9. Upload NID Copy <span class="req">*</span></label>
+        <div class="field-hint">ℹ️ Accepted formats: PDF, JPG, JPEG</div>
+        <div class="upload-box"><i class="ti ti-upload" aria-hidden="true"></i>Click to upload NID</div>
+      </div>
+    </div>
+
+    <div class="section-title">Section 3 — Personal Details</div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Q10. Gender <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-btn" onclick="pick(this,'gender')">Male</div>
+          <div class="radio-btn" onclick="pick(this,'gender')">Female</div>
+          <div class="radio-btn" onclick="pick(this,'gender')">Other</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Q11. Marital Status <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-btn" onclick="pick(this,'marital');toggleMarital(this.textContent)">Married</div>
+          <div class="radio-btn" onclick="pick(this,'marital');toggleMarital(this.textContent)">Unmarried</div>
+          <div class="radio-btn" onclick="pick(this,'marital');toggleMarital(this.textContent)">Divorced</div>
+          <div class="radio-btn" onclick="pick(this,'marital');toggleMarital(this.textContent)">Widowed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="conditional" id="spouse-section">
+      <div class="section-title" style="margin-top:0">Section 3a — Spouse Information</div>
+      <div class="two-col">
+        <div class="field">
+          <label>Q12. Spouse Full Name <span class="req">*</span></label>
+          <div class="field-hint">ℹ️ Name spelling must be as per NID</div>
+          <input type="text" placeholder="Spouse name as on NID">
+        </div>
+        <div class="field">
+          <label>Q13. Spouse Date of Birth <span class="req">*</span></label>
+          <div class="field-hint">ℹ️ Must be as per NID</div>
+          <input type="date">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label>Q14. Spouse NID Number <span class="req">*</span></label>
+          <input type="text" placeholder="Spouse NID number">
+        </div>
+        <div class="field">
+          <label>Q15. Upload Spouse NID <span class="req">*</span></label>
+          <div class="field-hint">ℹ️ Accepted formats: PDF, JPG, JPEG</div>
+          <div class="upload-box"><i class="ti ti-upload" aria-hidden="true"></i>Click to upload</div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:4px">
+        <label>Q16. Do you have any children? <span class="req">*</span></label>
+        <div class="radio-group">
+          <div class="radio-btn" onclick="pick(this,'children');toggleChildren(this.textContent)">Yes</div>
+          <div class="radio-btn" onclick="pick(this,'children');toggleChildren(this.textContent)">No</div>
+        </div>
+      </div>
+      <div class="conditional" id="children-section">
+        <div class="section-title" style="margin-top:0">Section 3b — Children Information</div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px">Maximum 2 children covered under group insurance.</div>
+        <div style="font-size:12px;font-weight:500;color:#0078d4;margin-bottom:6px">Child 1</div>
+        <div class="two-col">
+          <div class="field">
+            <label>Q17. Child 1 Name <span class="req">*</span></label>
+            <div class="field-hint">ℹ️ As per NID / Birth Certificate / Valid Vaccination Card</div>
+            <input type="text" placeholder="Child's full name">
+          </div>
+          <div class="field">
+            <label>Q18. Child 1 Date of Birth <span class="req">*</span></label>
+            <div class="field-hint">ℹ️ As per NID / Birth Certificate / Vaccination Card</div>
+            <input type="date">
+          </div>
+        </div>
+        <div class="field">
+          <label>Q19. Child 1 Valid Document <span class="req">*</span></label>
+          <div class="field-hint">ℹ️ Valid doc covers NID or Birth Certificate or Valid Vaccine Card</div>
+          <div class="upload-box"><i class="ti ti-upload" aria-hidden="true"></i>Upload Child 1 document</div>
+        </div>
+        <div style="font-size:12px;font-weight:500;color:#0078d4;margin:12px 0 6px">Child 2 <span style="font-weight:400;font-size:11px">(if applicable)</span></div>
+        <div class="two-col">
+          <div class="field">
+            <label>Q20. Child 2 Name</label>
+            <div class="field-hint">ℹ️ As per NID / Birth Certificate / Valid Vaccination Card</div>
+            <input type="text" placeholder="Child's full name">
+          </div>
+          <div class="field">
+            <label>Q21. Child 2 Date of Birth</label>
+            <div class="field-hint">ℹ️ As per NID / Birth Certificate / Vaccination Card</div>
+            <input type="date">
+          </div>
+        </div>
+        <div class="field">
+          <label>Q22. Child 2 Valid Document</label>
+          <div class="field-hint">ℹ️ Valid doc covers NID or Birth Certificate or Valid Vaccine Card</div>
+          <div class="upload-box"><i class="ti ti-upload" aria-hidden="true"></i>Upload Child 2 document</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Section 4 — Insurance Coverage Preview</div>
+    <div id="no-desig-msg" style="font-size:13px;color:var(--color-text-secondary);padding:10px 0">Please select your designation above to view your coverage rates.</div>
+
+    <div id="coverage-section" style="display:none">
+      <div class="coverage-table-wrap">
+        <h3>Your insurance coverage — <span id="cov-desig-label" style="color:#0078d4"></span></h3>
+        <table class="cov">
+          <thead>
+            <tr>
+              <th>Designation</th>
+              <th>GT Coverage (Tk.)</th>
+              <th>Critical Illness (Tk.)</th>
+              <th>IPD Coverage (Tk.)</th>
+              <th>OPD Coverage (Tk.)</th>
+            </tr>
+          </thead>
+          <tbody id="cov-body"></tbody>
+        </table>
+        <div class="footnote">* GT = Group Term Life &nbsp;·&nbsp; IPD = In-Patient Dept &nbsp;·&nbsp; OPD = Out-Patient Dept &nbsp;·&nbsp; Highlighted row = your default package</div>
+      </div>
+
+      <div class="upgrade-panel" id="upgrade-panel" style="display:none">
+        <h3>📦 Package Upgrade Option <span class="tag">Optional</span></h3>
+        <p>Your default package is pre-selected below. You may upgrade to a higher tier. Downgrade below your designated tier is not permitted.</p>
+        <div class="upgrade-opts" id="upgrade-opts"></div>
+        <div class="footnote" style="margin-top:10px">Selected package will be recorded upon form submission.</div>
+      </div>
+    </div>
+
+    <button class="submit-btn" onclick="handleSubmit()">Submit Enrollment Form →</button>
+  </div>
+</div>
+
+<script>
+const rates = {
+  MD:   {label:"Managing Director / Board Advisors", gt:1800000, ci:500000,  ipd:500000, opd:50000,   opdText:null},
+  DIR:  {label:"Director",                           gt:1500000, ci:500000,  ipd:250000, opd:15000,   opdText:null},
+  DDIR: {label:"Deputy Director",                    gt:1500000, ci:500000,  ipd:250000, opd:15000,   opdText:null},
+  DGM:  {label:"Deputy General Manager",             gt:1000000, ci:500000,  ipd:250000, opd:15000,   opdText:null},
+  AGM:  {label:"Assistant General Manager",          gt:700000,  ci:350000,  ipd:200000, opd:12000,   opdText:null},
+  SM:   {label:"Senior Manager",                     gt:700000,  ci:350000,  ipd:200000, opd:12000,   opdText:null},
+  MGR:  {label:"Manager",                            gt:700000,  ci:350000,  ipd:200000, opd:12000,   opdText:null},
+  DM:   {label:"Deputy Manager",                     gt:500000,  ci:250000,  ipd:150000, opd:10000,   opdText:null},
+  AM:   {label:"Assistant Manager",                  gt:500000,  ci:250000,  ipd:150000, opd:10000,   opdText:null},
+  SRO:  {label:"Sr. Officer / Sr. Engineer",         gt:300000,  ci:150000,  ipd:150000, opd:10000,   opdText:null},
+  OFF:  {label:"Officer / Engineer",                 gt:300000,  ci:150000,  ipd:150000, opd:10000,   opdText:null},
+  JRO:  {label:"Jr. Officer / Asst. Engineer",       gt:300000,  ci:150000,  ipd:150000, opd:10000,   opdText:null},
+  TRN:  {label:"Trainee",                            gt:200000,  ci:100000,  ipd:100000, opd:0,       opdText:"Not Covered"}
+};
+
+const order = ["MD","DIR","DDIR","DGM","AGM","SM","MGR","DM","AM","SRO","OFF","JRO","TRN"];
+const fmt = n => n.toLocaleString('en-BD');
+let selectedPkg = null;
+let currentDesig = null;
+
+function pick(el, group) {
+  document.querySelectorAll(`[onclick*="'${group}'"]`).forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  updateProg();
+}
+
+function toggleMarital(val) {
+  const s = document.getElementById('spouse-section');
+  if(val==='Married'){s.classList.add('show');}
+  else{s.classList.remove('show');document.getElementById('children-section').classList.remove('show');}
+  updateProg();
+}
+
+function toggleChildren(val) {
+  document.getElementById('children-section').classList.toggle('show', val==='Yes');
+}
+
+function onDesigChange() {
+  const val = document.getElementById('desig').value;
+  currentDesig = val; selectedPkg = val;
+  const covSec = document.getElementById('coverage-section');
+  const noMsg = document.getElementById('no-desig-msg');
+  if(!val||!rates[val]){covSec.style.display='none';noMsg.style.display='block';return;}
+  covSec.style.display='block'; noMsg.style.display='none';
+  document.getElementById('cov-desig-label').textContent = rates[val].label;
+  renderCoverageTable(val);
+  renderUpgrades(val);
+  updateProg();
+}
+
+function opdCell(r) {
+  if(r.opdText) return `<td class="not-covered">${r.opdText}</td>`;
+  return `<td>${fmt(r.opd)}</td>`;
+}
+
+function renderCoverageTable(desigKey) {
+  const tbody = document.getElementById('cov-body');
+  tbody.innerHTML = '';
+  const r = rates[desigKey];
+  const tr = document.createElement('tr');
+  tr.className = 'highlight';
+  tr.innerHTML = `<td>${r.label}</td><td>${fmt(r.gt)}</td><td>${fmt(r.ci)}</td><td>${fmt(r.ipd)}</td>${opdCell(r)}`;
+  tbody.appendChild(tr);
+}
+
+function renderUpgrades(desigKey) {
+  const panel = document.getElementById('upgrade-panel');
+  const opts = document.getElementById('upgrade-opts');
+  const myIdx = order.indexOf(desigKey);
+  opts.innerHTML = '';
+  const upgradable = order.slice(0, myIdx + 1);
+  if(upgradable.length <= 1){panel.style.display='none';return;}
+  panel.style.display='block';
+
+  upgradable.forEach(key => {
+    const r = rates[key];
+    const isDefault = key === desigKey;
+    const div = document.createElement('div');
+    div.className = 'upgrade-opt' + (isDefault ? ' current-pkg picked' : '');
+    div.dataset.key = key;
+
+    const opdStr = r.opdText ? r.opdText : 'Tk. ' + fmt(r.opd);
+    div.innerHTML = `
+      <div style="flex:1;min-width:0">
+        <div class="pkg-name">${r.label}</div>
+        <div class="pkg-meta">GT: Tk.${fmt(r.gt)} &nbsp;|&nbsp; CI: Tk.${fmt(r.ci)} &nbsp;|&nbsp; IPD: Tk.${fmt(r.ipd)} &nbsp;|&nbsp; OPD: ${opdStr}</div>
+      </div>
+      <span class="pkg-badge ${isDefault?'badge-default':'badge-upgrade'}" id="badge-${key}">${isDefault?'Default ✓':'Upgrade'}</span>`;
+
+    div.onclick = () => {
+      document.querySelectorAll('.upgrade-opt').forEach(d=>{
+        d.classList.remove('picked');
+        const b = d.querySelector('.pkg-badge');
+        if(d.dataset.key === desigKey){b.className='pkg-badge badge-default';b.textContent='Default ✓';}
+        else{b.className='pkg-badge badge-upgrade';b.textContent='Upgrade';}
+      });
+      div.classList.add('picked');
+      const badge = div.querySelector('.pkg-badge');
+      badge.className = 'pkg-badge badge-selected';
+      badge.textContent = isDefault ? 'Default ✓' : 'Selected ✓';
+      selectedPkg = key;
+      renderCoverageTable(key);
+      document.getElementById('cov-desig-label').textContent = rates[key].label + (key !== desigKey ? ' (Upgraded)' : '');
+    };
+    opts.appendChild(div);
+  });
+}
+
+function updateProg() {
+  const steps = [
+    document.getElementById('company').value !== '',
+    document.getElementById('desig').value !== '',
+    document.querySelectorAll('.radio-btn.active[onclick*="\'gender\'"]').length > 0,
+    document.querySelectorAll('.radio-btn.active[onclick*="\'marital\'"]').length > 0
+  ];
+  const done = steps.filter(Boolean).length;
+  const pct = Math.round((done / steps.length) * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  const labels = ["Company","Designation","Gender","Marital Status"];
+  const next = steps.findIndex(s=>!s);
+  document.getElementById('prog-label').textContent = `Progress: ${pct}% complete${next>=0?' — Next: '+labels[next]:' — Ready to submit'}`;
+}
+
+function handleSubmit() {
+  alert('✅ Form submitted successfully!\n\nIn the live Microsoft Form:\n• Data stored in "Insurance Database" on SharePoint\n• Confirmation email sent to your Outlook\n• Submission timestamp auto-logged\n• Printable summary email dispatched');
+}
+</script>
